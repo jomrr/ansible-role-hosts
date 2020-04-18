@@ -29,7 +29,7 @@ Variables and defaults for this role in defaults/main.yml:
 
 # The role is disabled by default, so you do not get in trouble.
 # Checked in tasks/main.yml which includes tasks.yml if enabled.
-hosts_enabled: False
+hosts_role_enabled: False
 
 # Backup the hosts file when applying template
 hosts_backup: True
@@ -84,7 +84,7 @@ Here are some example configurations.
 - hosts: hosts_systems
   become: True
   vars:
-    hosts_enabled: True
+    hosts_role_enabled: True
   roles:
     - role: ansible-role-hosts
 ```
@@ -99,7 +99,7 @@ Here are some example configurations.
 - hosts: hosts_systems
   become: True
   vars:
-    hosts_enabled: True
+    hosts_role_enabled: True
     hosts_ip_static: True
   roles:
     - role: ansible-role-hosts
@@ -115,7 +115,7 @@ Here are some example configurations.
 - hosts: hosts_systems
   become: True
   vars:
-    hosts_enabled: True
+    hosts_role_enabled: True
     hosts_ip_all: True
   roles:
     - role: ansible-role-hosts

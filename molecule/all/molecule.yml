@@ -193,7 +193,7 @@ provisioner:
   inventory:
     group_vars:
       all:
-        hosts_enabled: True
+        hosts_role_enabled: True
 verifier:
   name: testinfra
   env:

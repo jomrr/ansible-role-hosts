@@ -4,7 +4,7 @@
 
 - name: Import tasks for role ansible-role-hosts
   import_tasks: tasks.yml
-  when: hosts_enabled | bool
+  when: hosts_role_enabled | bool
     and ansible_virtualization_role == 'host'
     or (ansible_virtualization_role == 'guest'
     and not (ansible_virtualization_type == 'docker'
