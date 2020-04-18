@@ -70,7 +70,7 @@ hosts_entries: []
 
 None.
 
-## Example Playbook
+## Example Playbooks
 
 Here are some example configurations.
 
