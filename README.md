@@ -34,28 +34,23 @@ hosts_enabled: False
 # Backup the hosts file when applying template
 hosts_backup: True
 
-# Determines how the targeted host(s) is added to /etc/hosts
-# v4/v6 are used to separate settings for IPv4 and IPv6...
-# all:
+# Determine how the targeted host(s) is added to /etc/hosts
+# hosts_ip_all:
 #   True  = generates entries for all IPs in ansible_all_ipvX_addresses
 #           with ansible_fqdn and ansible_hostname
 #   False = generates single entry for value of key "address"
 #           with ansible_fqdn and ansible_hostname dependant on static setting
-# static:
+hosts_ip_all: False
+# hosts_ip_static:
 #   True  = use address defined in key "address"
 #   False = use 127.0.1.1 if IP obtained via dhcp.
 #           If IP is not obtained by dhcp the value of key "address" is used.
-# address:  IP address to use, when "all: False", and
-#           "static: True" or "static: False" and IP not obtained via dhcp
-hosts_ips:
-  v4:
-    all: False
-    static: False
-    address: "{{ ansible_default_ipv4.address }}"
-  v6:
-    all: False
-    static: False
-    address: "{{ ansible_default_ipv6.address }}"
+hosts_ip_static: False
+# hosts_ip_static:
+#   IP address to use, when "hosts_ip_all: False", and
+#   "hosts_ip_static: True" or "static: False" and IP not obtained via dhcp
+#   If "static: False" and IP was obtained via dhcp then 127.0.1.1 is used
+hosts_ip_address: "{{ ansible_default_ipv4.address }}"
 
 # Additional entries in the hosts file
 # hosts_entries:
