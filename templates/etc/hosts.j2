@@ -1,0 +1,36 @@
+# {{ template_destpath }}
+# vi: ft=ansible_hosts
+# {{ ansible_managed }}
+
+{% if ansible_all_ipv4_addresses | length > 0 %}
+# IPv4 host entries
+127.0.0.1   localhost.localdomain  localhost
+
+{% if hosts_ip_all | bool %}
+{% for address4 in ansible_all_ipv4_addresses %}
+{{ address4 }} {{ hosts_fqdn | d('') }} {{ ansible_hostname }}
+{% endfor %}
+{% else %}
+{% if hosts_ip_static | bool %}
+{{ hosts_ip_address }}   {{ hosts_fqdn | d('') }} {{ ansible_hostname }}
+{% else %}
+{{ '127.0.1.1' if hosts_dhcp | bool else hosts_ip_address }}  {{ hosts_fqdn }} {{ ansible_hostname }}
+{% endif %}
+{% endif %}
+{% endif %}
+{% if ansible_all_ipv6_addresses | length > 0 %}
+
+# IPv6 host entries
+::1     localhost6.localdomain6  localhost6  ip6-localhost  ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+{% endif %}
+{% if hosts_entries | length > 0 %}
+
+# Static entries
+{% for host in hosts_entries %}
+{{ host.ip }}   {{ host.name }} {{ host.aliases | default('') | join(' ') }}
+{% endfor %}
+{% endif %}

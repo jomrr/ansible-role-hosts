@@ -1,0 +1,5 @@
+---
+# role: ansible-role-hosts
+# file: vars/Debian.yml
+
+hosts_packages: []

@@ -1,0 +1,6 @@
+---
+# role: ansible-role-hosts
+# file: vars/Oracle.yml
+
+hosts_packages:
+  - iproute

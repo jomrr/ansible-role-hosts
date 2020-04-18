@@ -1,0 +1,6 @@
+---
+# role: ansible-role-hosts
+# file: vars/RedHat.yml
+
+hosts_packages:
+  - iproute
