@@ -123,8 +123,8 @@ Here are some example configurations.
 
 ## License and Author
 
-- Author:: [jam82](https://github.com/jam82/))
-- Copyright:: 2020, [jam82](https://github.com/jam82/))
+- Author:: [jam82](https://github.com/jam82/)
+- Copyright:: 2020, [jam82](https://github.com/jam82/)
 
 Licensed under [MIT License](https://opensource.org/licenses/MIT).
-See [LICENSE](https://github.com/jam82/{{ role_name }}/blob/master/LICENSE) file in repository.
+See [LICENSE](https://github.com/jam82/ansible-role-hosts/blob/master/LICENSE) file in repository.
