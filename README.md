@@ -100,11 +100,7 @@ Here are some example configurations.
   become: True
   vars:
     hosts_enabled: True
-    hosts_ips:
-      v4:
-        static: True
-      v6:
-        static: True
+    hosts_ip_static: True
   roles:
     - role: ansible-role-hosts
 ```
@@ -120,9 +116,7 @@ Here are some example configurations.
   become: True
   vars:
     hosts_enabled: True
-    hosts_ips:
-      v4:
-        all: True
+    hosts_ip_all: True
   roles:
     - role: ansible-role-hosts
 ```
