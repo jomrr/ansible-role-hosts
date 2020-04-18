@@ -1,6 +1,6 @@
 # ansible-role-hosts
 
-Ansible role for configuring the `/etc/hosts` file.
+**Ansible role for configuring the `/etc/hosts` file.**
 
 ## Supported Platforms
 
@@ -123,12 +123,8 @@ Here are some example configurations.
 
 ## License and Author
 
-- Author:: Jonas Mauer (<jam@kabelmail.net>)
-- Copyright:: 2019, Jonas Mauer
+- Author:: [jam82](https://github.com/jam82/))
+- Copyright:: 2020, [jam82](https://github.com/jam82/))
 
-Licensed under MIT License;
-See LICENSE file in repository.
-
-## References
-
-[ArchWiki](https://wiki.archlinux.org/)
+Licensed under [MIT License](https://opensource.org/licenses/MIT).
+See [LICENSE](https://github.com/jam82/{{ role_name }}/blob/master/LICENSE) file in repository.
