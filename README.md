@@ -16,7 +16,7 @@
 
 ## Requirements
 
-Ansible 2.9 or higher is recommended.
+Ansible 2.8 or higher.
 
 ## Variables
 
