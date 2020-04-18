@@ -2,16 +2,10 @@
 # role: ansible-role-hosts
 # file: tasks/main.yml
 
-- name: "Check if running inside container"
-  shell: |
-    grep 'docker\|podman\|cri' /proc/1/cgroup | wc -l
-  changed_when: False
-  register: hosts_cgroup
-
-- name: "Set fact hosts_no_container"
-  set_fact:
-    hosts_no_container: "{{ True if hosts_cgroup.stdout == 0 else True }}"
-
 - name: Import tasks for role ansible-role-hosts
   import_tasks: tasks.yml
-  when: hosts_enabled | bool and hosts_no_container | bool
+  when: hosts_enabled | bool
+    and ansible_virtualization_role == 'host'
+    or (ansible_virtualization_role == 'guest'
+    and not (ansible_virtualization_type == 'docker'
+    or ansible_virtualization_type == 'podman'))
