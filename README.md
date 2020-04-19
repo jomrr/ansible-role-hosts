@@ -1,5 +1,7 @@
 # ansible-role-hosts
 
+---
+
 **Ansible role for configuring the `/etc/hosts` file.**
 
 ## Supported Platforms
