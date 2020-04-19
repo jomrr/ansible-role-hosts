@@ -39,10 +39,6 @@
   set_fact:
     hosts_dhcp: "{{ hosts_ip_test | int | bool }}"
 
-- name: "Set fact hosts_fqdn"
-  set_fact:
-    hosts_fqdn: "{{ ansible_fqdn if ansible_fqdn != ansible_hostname else '' }}"
-
 - name: "Write custom hosts file"
   template:
     src: "etc/hosts.j2"
