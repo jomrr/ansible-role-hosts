@@ -51,7 +51,3 @@
     group: root
     mode: 0644
     backup: "{{ hosts_backup }}"
-
-- name: debug
-  debug:
-    msg: "{{ ansible_fqdn }} {{ ansible_hostname }} = {{ hosts_fqdn }}"
