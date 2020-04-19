@@ -34,10 +34,10 @@ hosts_role_enabled: False
 # Backup the hosts file when applying template
 hosts_backup: True
 
-# Set FQDN for hosts file.
-# Only overwrite this if you want to force it manually.
+# Set domain for FQDN in hosts file.
+# Only overwrite this if you want to force the domain manually.
 # Normally ansible_domain should be set if you have a sane network configuration.
-hosts_fqdn: "{{ (ansible_domain | length > 0) | ternary(ansible_hostname + '.' + ansible_domain, '') }}"
+hosts_fqdn: "{{ (ansible_domain | length > 0) | ternary(ansible_domain, '') }}"
 
 # Determine how the targeted host(s) is added to /etc/hosts
 # hosts_ip_all:
