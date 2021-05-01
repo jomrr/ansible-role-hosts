@@ -1,5 +1,0 @@
----
-# role: ansible-role-hosts
-# file: vars/Alpine.yml
-
-hosts_packages: []

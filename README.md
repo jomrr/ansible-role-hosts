@@ -1,60 +1,60 @@
 # ansible-role-hosts
 
+![GitHub](https://img.shields.io/github/license/jam82/ansible-role-hosts) [![Build Status](https://travis-ci.org/jam82/ansible-role-hosts.svg?branch=master)](https://travis-ci.org/jam82/ansible-role-hosts)
+
 **Ansible role for configuring the `/etc/hosts` file.**
 
 ## Supported Platforms
 
 - Alpine
-- Amazonlinux
+- Amazon
 - Archlinux
 - CentOS
 - Debian
 - Fedora
+- Manjaro
 - Oraclelinux
-- Suse
+- OpenSuse Leap, Tumbleweed
+- Raspbian
 - Ubuntu
 
 ## Requirements
 
-Ansible 2.8 or higher.
+Ansible 2.9 or higher.
 
 ## Variables
 
 Variables and defaults for this role in defaults/main.yml:
 
 ```yaml
----
-# role: ansible-role-hosts
-# file: defaults/main.yml
-
 # The role is disabled by default, so you do not get in trouble.
 # Checked in tasks/main.yml which includes tasks.yml if enabled.
-hosts_role_enabled: False
+hosts_role_enabled: false
 
 # Backup the hosts file when applying template
-hosts_backup: True
+hosts_backup: true
 
 # Set domain for FQDN in hosts file.
 # Only overwrite this if you want to force the domain manually.
 # Normally ansible_domain should be set if you have a sane network configuration.
-hosts_fqdn: "{{ (ansible_domain | length > 0) | ternary(ansible_domain, '') }}"
+hosts_domain: "{{ (ansible_domain | length > 0) | ternary(ansible_domain, '') }}"
 
 # Determine how the targeted host(s) is added to /etc/hosts
 # hosts_ip_all:
-#   True  = generates entries for all IPs in ansible_all_ipvX_addresses
+#   true  = generates entries for all IPs in ansible_all_ipvX_addresses
 #           with ansible_fqdn and ansible_hostname
-#   False = generates single entry for value of key "address"
+#   false = generates single entry for value of key "address"
 #           with ansible_fqdn and ansible_hostname dependant on static setting
-hosts_ip_all: False
+hosts_ip_all: false
 # hosts_ip_static:
-#   True  = use address defined in key "address"
-#   False = use 127.0.1.1 if IP obtained via dhcp.
+#   true  = use address defined in key "address"
+#   false = use 127.0.1.1 if IP obtained via dhcp.
 #           If IP is not obtained by dhcp the value of key "address" is used.
-hosts_ip_static: False
+hosts_ip_static: false
 # hosts_ip_static:
-#   IP address to use, when "hosts_ip_all: False", and
-#   "hosts_ip_static: True" or "static: False" and IP not obtained via dhcp
-#   If "static: False" and IP was obtained via dhcp then 127.0.1.1 is used
+#   IP address to use, when "hosts_ip_all: false", and
+#   "hosts_ip_static: true" or "static: false" and IP not obtained via dhcp
+#   If "static: false" and IP was obtained via dhcp then 127.0.1.1 is used
 hosts_ip_address: "{{ ansible_default_ipv4.address }}"
 
 # Additional entries in the hosts file
@@ -62,7 +62,7 @@ hosts_ip_address: "{{ ansible_default_ipv4.address }}"
 #   - name: test.blabla.tld
 #     aliases:
 #       - test
-#       - test1.blabla.tld
+#       - sys01.blabla.tld
 #     ip: 192.168.08.15
 #   - name: test6.blabla.tld
 #     aliases:
@@ -86,10 +86,11 @@ Here are some example configurations.
 # role: ansible-role-hosts
 # file: site.yml
 
-- hosts: hosts_systems
-  become: True
+- hosts: all
+  become: true
+  gather_facts: true
   vars:
-    hosts_role_enabled: True
+    hosts_role_enabled: true
   roles:
     - role: ansible-role-hosts
 ```
@@ -101,11 +102,12 @@ Here are some example configurations.
 # role: ansible-role-hosts
 # file: site.yml
 
-- hosts: hosts_systems
-  become: True
+- hosts: all
+  become: true
+  gather_facts: true
   vars:
-    hosts_role_enabled: True
-    hosts_ip_static: True
+    hosts_role_enabled: true
+    hosts_ip_static: true
   roles:
     - role: ansible-role-hosts
 ```
@@ -117,11 +119,12 @@ Here are some example configurations.
 # role: ansible-role-hosts
 # file: site.yml
 
-- hosts: hosts_systems
-  become: True
+- hosts: all
+  become: true
+  gather_facts: true
   vars:
-    hosts_role_enabled: True
-    hosts_ip_all: True
+    hosts_role_enabled: true
+    hosts_ip_all: true
   roles:
     - role: ansible-role-hosts
 ```
