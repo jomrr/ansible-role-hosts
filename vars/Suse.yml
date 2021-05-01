@@ -1,6 +1,0 @@
----
-# role: ansible-role-hosts
-# file: vars/Suse.yml
-
-hosts_packages:
-  - iproute2

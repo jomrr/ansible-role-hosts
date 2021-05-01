@@ -5,28 +5,26 @@
 ## Supported Platforms
 
 - Alpine
-- Amazonlinux
+- Amazon
 - Archlinux
 - CentOS
 - Debian
 - Fedora
+- Manjaro
 - Oraclelinux
-- Suse
+- OpenSuse Leap, Tumbleweed
+- Raspbian
 - Ubuntu
 
 ## Requirements
 
-Ansible 2.8 or higher.
+Ansible 2.9 or higher.
 
 ## Variables
 
 Variables and defaults for this role in defaults/main.yml:
 
 ```yaml
----
-# role: ansible-role-hosts
-# file: defaults/main.yml
-
 # The role is disabled by default, so you do not get in trouble.
 # Checked in tasks/main.yml which includes tasks.yml if enabled.
 hosts_role_enabled: false
@@ -37,7 +35,7 @@ hosts_backup: true
 # Set domain for FQDN in hosts file.
 # Only overwrite this if you want to force the domain manually.
 # Normally ansible_domain should be set if you have a sane network configuration.
-hosts_fqdn: "{{ (ansible_domain | length > 0) | ternary(ansible_domain, '') }}"
+hosts_domain: "{{ (ansible_domain | length > 0) | ternary(ansible_domain, '') }}"
 
 # Determine how the targeted host(s) is added to /etc/hosts
 # hosts_ip_all:
@@ -62,7 +60,7 @@ hosts_ip_address: "{{ ansible_default_ipv4.address }}"
 #   - name: test.blabla.tld
 #     aliases:
 #       - test
-#       - test1.blabla.tld
+#       - sys01.blabla.tld
 #     ip: 192.168.08.15
 #   - name: test6.blabla.tld
 #     aliases:
@@ -86,8 +84,9 @@ Here are some example configurations.
 # role: ansible-role-hosts
 # file: site.yml
 
-- hosts: hosts_systems
+- hosts: all
   become: true
+  gather_facts: true
   vars:
     hosts_role_enabled: true
   roles:
@@ -101,8 +100,9 @@ Here are some example configurations.
 # role: ansible-role-hosts
 # file: site.yml
 
-- hosts: hosts_systems
+- hosts: all
   become: true
+  gather_facts: true
   vars:
     hosts_role_enabled: true
     hosts_ip_static: true
@@ -117,8 +117,9 @@ Here are some example configurations.
 # role: ansible-role-hosts
 # file: site.yml
 
-- hosts: hosts_systems
+- hosts: all
   become: true
+  gather_facts: true
   vars:
     hosts_role_enabled: true
     hosts_ip_all: true

@@ -4,6 +4,8 @@
 
 dependency:
   name: galaxy
+  options:
+    role-file: requirements.yml
 driver:
   name: vagrant
   provider:
@@ -13,10 +15,9 @@ lint: |
   set -e
   yamllint .
   ansible-lint
-  flake8
 platforms:
-  - name: hosts-alpine310
-    box: "generic/alpine310"
+  - name: hosts-alpine313
+    box: "generic/alpine313"
     cpus: 2
     memory: 1024
   - name: hosts-amazonlinux2
@@ -43,8 +44,12 @@ platforms:
     box: "debian/buster64"
     cpus: 2
     memory: 1024
-  - name: hosts-fedora31
-    box: "fedora/31-cloud-base"
+  - name: hosts-debian11
+    box: "debian/bullseye64"
+    cpus: 2
+    memory: 1024
+  - name: hosts-fedora33
+    box: "fedora/33-cloud-base"
     cpus: 2
     memory: 1024
   - name: hosts-suse-leap-15
@@ -69,25 +74,14 @@ platforms:
     memory: 1024
 provisioner:
   name: ansible
-  log: True
+  log: true
   playbooks:
     prepare: ../resources/playbooks/prepare.yml
     converge: ../resources/playbooks/converge.yml
+    verify: ../resources/playbooks/verify.yml
   inventory:
     group_vars:
       all:
-        hosts_role_enabled: True
-        hosts_entries:
-          - name: test.blabla.tld
-            aliases:
-              - test
-              - test1.blabla.tld
-            ip: 192.168.08.15
+        hosts_role_enabled: true
 verifier:
-  name: testinfra
-  env:
-    PYTHONWARNINGS: "ignore"
-  directory: ../resources/tests
-  options:
-    v: True
-    sudo: True
+  name: ansible

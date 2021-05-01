@@ -2,7 +2,7 @@
 # vi: ft=ansible_hosts
 # {{ ansible_managed }}
 
-{% if ansible_all_ipv4_addresses | length > 0 %}
+{% if ansible_all_ipv4_addresses | default([]) | length > 0 %}
 # IPv4 host entries
 127.0.0.1   localhost.localdomain  localhost
 
@@ -18,7 +18,7 @@
 {% endif %}
 {% endif %}
 {% endif %}
-{% if ansible_all_ipv6_addresses | length > 0 %}
+{% if ansible_all_ipv6_addresses | default([]) | length > 0 %}
 
 # IPv6 host entries
 ::1     localhost6.localdomain6  localhost6  ip6-localhost  ip6-loopback

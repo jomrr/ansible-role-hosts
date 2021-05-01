@@ -4,19 +4,98 @@
 
 dependency:
   name: galaxy
+  options:
+    role-file: requirements.yml
 driver:
   name: docker
 lint: |
   set -e
   yamllint .
   ansible-lint
-  flake8
 platforms:
-  - name: hosts-default
-    image: ${MOLECULE_DIST:-"jam82/molecule-ubuntu:18.04"}
-    command: ${MOLECULE_DOCKER_CMD:-""}
-    pre_build_image: True
-    privileged: True
+  - name: hosts-alpine
+    image: "jam82/molecule-alpine:latest"
+    pre_build_image: true
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+  - name: hosts-amazonlinux
+    image: "jam82/molecule-amazonlinux:latest"
+    pre_build_image: true
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - name: hosts-arch
+    image: "jam82/molecule-archlinux:latest"
+    pre_build_image: true
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - name: hosts-centos
+    image: "jam82/molecule-centos:latest"
+    pre_build_image: true
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - name: hosts-debian
+    image: "jam82/molecule-debian:latest"
+    pre_build_image: true
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - name: hosts-fedora
+    image: "jam82/molecule-fedora:latest"
+    pre_build_image: true
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - name: hosts-opensuse
+    image: "jam82/molecule-opensuse:15"
+    pre_build_image: true
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - name: hosts-tumbleweed
+    image: "jam82/molecule-opensuse:tumbleweed"
+    pre_build_image: true
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - name: hosts-oraclelinux
+    image: "jam82/molecule-oraclelinux:latest"
+    pre_build_image: true
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - name: hosts-ubuntu
+    image: "jam82/molecule-ubuntu:latest"
+    pre_build_image: true
+    privileged: true
     tmpfs:
       - /tmp
       - /run
@@ -24,19 +103,14 @@ platforms:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
 provisioner:
   name: ansible
-  log: True
+  log: true
   playbooks:
     prepare: ../resources/playbooks/prepare.yml
     converge: ../resources/playbooks/converge.yml
+    verify: ../resources/playbooks/verify.yml
   inventory:
     group_vars:
       all:
-        hosts_role_enabled: True
+        hosts_role_enabled: true
 verifier:
-  name: testinfra
-  env:
-    PYTHONWARNINGS: "ignore"
-  directory: ../resources/tests
-  options:
-    v: True
-    sudo: True
+  name: ansible

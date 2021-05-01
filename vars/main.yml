@@ -1,0 +1,17 @@
+---
+# role: ansible-role-hosts
+# file: vars/main.yml
+
+_hosts_packages:
+  Alpine:
+    - iproute2
+  Archlinux:
+    - iproute2
+  Debian:
+    - iproute2
+  RedHat:
+    - iproute
+  Suse:
+    - iproute2
+
+hosts_packages: "{{ _hosts_packages[ansible_os_family] | default([]) }}"

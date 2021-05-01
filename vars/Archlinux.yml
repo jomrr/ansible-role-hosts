@@ -1,6 +1,0 @@
----
-# role: ansible-role-hosts
-# file: vars/Archlinux.yml
-
-hosts_packages:
-  - iproute2
