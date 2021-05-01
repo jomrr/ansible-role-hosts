@@ -11,7 +11,7 @@
 
     - name: "Check if dhcp or static configuration"
       command: "ip r"
-      changed_when: False
+      changed_when: false
       register: hosts_iproute
 
     - name: "Set fact for testing ip address"
