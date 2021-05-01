@@ -1,5 +1,7 @@
 # ansible-role-hosts
 
+![GitHub](https://img.shields.io/github/license/jam82/ansible-role-hosts) [![Build Status](https://travis-ci.org/jam82/ansible-role-hosts.svg?branch=master)](https://travis-ci.org/jam82/ansible-role-hosts)
+
 **Ansible role for configuring the `/etc/hosts` file.**
 
 ## Supported Platforms
