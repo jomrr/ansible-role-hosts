@@ -1,6 +1,6 @@
 ---
 # role: ansible-role-hosts
-# file: yamllint.yml
+# file: .yamllint.yml
 
 extends: default
 
