@@ -8,6 +8,6 @@
   vars:
     baseline_role_enabled: false
     hosts_role_enabled: true
-  roles: # to enable required roles put them in requirements.yml and add here
+  roles:    # to enable required roles put them in requirements.yml and add here
     # - baseline
     - role: '../ansible-role-hosts'
