@@ -1,5 +1,5 @@
 # file: {{ template_destpath }}
-# vim: set sw=4 ts=4 tw=4 et:
+# vim: set sw=4 ts=4 tw=4 et :
 # managed by ansible role: jam82.hosts
 
 {% if ansible_all_ipv4_addresses | default([]) | length > 0 %}
@@ -8,11 +8,11 @@
 
 {% if hosts_ip_all | bool %}
 {% for address4 in ansible_all_ipv4_addresses %}
-{{ address4 }} {{ hosts_fqdn | d('') }} {{ ansible_hostname }}
+{{ address4 }} {{ hosts_fqdn | d('') + ' ' }}{{ ansible_hostname }}
 {% endfor %}
 {% else %}
 {% if hosts_ip_static | bool %}
-{{ hosts_ip_address }}   {{ hosts_fqdn | d('') }} {{ ansible_hostname }}
+{{ hosts_ip_address }}   {{ hosts_fqdn | d('') + ' ' }}{{ ansible_hostname }}
 {% else %}
 {{ '127.0.1.1' if hosts_dhcp | bool else hosts_ip_address }}  {{ hosts_fqdn }} {{ ansible_hostname }}
 {% endif %}
