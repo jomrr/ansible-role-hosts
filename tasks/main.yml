@@ -36,6 +36,11 @@
         group: root
         mode: 0644
         backup: "{{ hosts_backup }}"
+      register: hosts_changed
+
+    - name: "Run gather_facts afer hosts file has changed for following roles"
+      gather_facts:
+      when: hosts_changed is changed
   when: hosts_role_enabled | bool
     and ansible_virtualization_role == 'host'
     or (ansible_virtualization_role == 'guest'
