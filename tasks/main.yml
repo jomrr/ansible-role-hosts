@@ -44,4 +44,4 @@
   when: hosts_role_enabled | bool
     and ansible_virtualization_role == 'host'
     or (ansible_virtualization_role == 'guest'
-    and ansible_virtualization_type not in ['docker', 'lxc', 'podman'])
+    and ansible_virtualization_type not in ['container', 'docker', 'lxc'])

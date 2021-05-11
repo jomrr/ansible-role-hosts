@@ -24,7 +24,9 @@ Ansible 2.9 or higher.
 
 ## Variables
 
-Variables and defaults for this role in defaults/main.yml:
+Variables and defaults for this role.
+
+### defaults/main.yml
 
 ```yaml
 # The role is disabled by default, so you do not get in trouble.
