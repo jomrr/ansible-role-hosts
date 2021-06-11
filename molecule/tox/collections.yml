@@ -1,0 +1,7 @@
+---
+# role: ansible-role-hosts
+# file: molecule/tox/collections.yml
+
+collections:
+  - community.docker
+  - community.general
