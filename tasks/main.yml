@@ -2,6 +2,10 @@
 # role: ansible-role-hosts
 # file: tasks/main.yml
 
+- name: debug virtualization type
+  debug:
+    msg: "{{ ansible_virtualization_type }}"
+
 - name: "Tasks for role ansible-role-hosts"
   block:
     - name: "Install packages for ansible-role-hosts"
