@@ -22,7 +22,7 @@ jobs:
         use:
           - img: alpine
             tag: latest
-          - img: amazon
+          - img: amazonlinux
             tag: latest
           - img: archlinux
             tag: latest
