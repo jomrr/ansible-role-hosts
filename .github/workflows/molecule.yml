@@ -34,7 +34,7 @@ jobs:
             tag: latest
           - img: opensuse
             tag: latest
-          - img: oracle
+          - img: oraclelinux
             tag: latest
           - img: ubuntu
             tag: latest
