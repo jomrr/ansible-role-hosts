@@ -4,7 +4,7 @@
 
 - name: debug virtualization type
   debug:
-    msg: "{{ ansible_virtualization_type }}"
+    msg: "{{ lookup('env', 'container') }}"
 
 - name: "Tasks for role ansible-role-hosts"
   block:
@@ -48,4 +48,4 @@
   when: hosts_role_enabled | bool
     and ansible_virtualization_role == 'host'
     or (ansible_virtualization_role == 'guest'
-    and ansible_virtualization_type not in ['container', 'docker', 'lxc'])
+    and ansible_virtualization_type not in ['container', 'containerd', 'docker', 'lxc', 'VirtualPC'])
