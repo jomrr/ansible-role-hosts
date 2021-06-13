@@ -5,7 +5,7 @@
 dependency:
   name: galaxy
   options:
-    role-file: requirements.yml
+    role-file: molecule/tox/requirements.yml
 driver:
   name: docker
 lint: |

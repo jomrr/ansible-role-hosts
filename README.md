@@ -1,6 +1,6 @@
 # ansible-role-hosts
 
-![GitHub](https://img.shields.io/github/license/jam82/ansible-role-hosts) ![GitHub last commit](https://img.shields.io/github/last-commit/jam82/ansible-role-hosts) ![GitHub issues](https://img.shields.io/github/issues-raw/jam82/ansible-role-hosts) ![Travis (.com) branch](https://img.shields.io/travis/com/jam82/ansible-role-hosts/main?label=ansible-lint%20latest)
+![GitHub](https://img.shields.io/github/license/jam82/ansible-role-hosts) ![GitHub last commit](https://img.shields.io/github/last-commit/jam82/ansible-role-hosts) ![GitHub issues](https://img.shields.io/github/issues-raw/jam82/ansible-role-hosts) !![Actions](https://github.com/jam82/ansible-role-hosts/actions/workflows/molecule.yml/badge.svg)
 
 **Ansible role for configuring the `/etc/hosts` file.**
 
