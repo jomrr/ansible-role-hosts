@@ -15,7 +15,7 @@ lint: |
 platforms:
   - name: hosts-alpine
     image: "jam82/molecule-alpine:latest"
-    command: ""
+    command: ~
     pre_build_image: true
     privileged: true
     tmpfs:
@@ -23,7 +23,7 @@ platforms:
       - /run
   - name: hosts-amazonlinux
     image: "jam82/molecule-amazonlinux:latest"
-    command: ""
+    command: ~
     pre_build_image: true
     privileged: true
     tmpfs:
@@ -33,7 +33,7 @@ platforms:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: hosts-arch
     image: "jam82/molecule-archlinux:latest"
-    command: ""
+    command: ~
     pre_build_image: true
     privileged: true
     tmpfs:
@@ -43,7 +43,7 @@ platforms:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: hosts-centos
     image: "jam82/molecule-centos:latest"
-    command: ""
+    command: ~
     pre_build_image: true
     privileged: true
     tmpfs:
@@ -53,7 +53,7 @@ platforms:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: hosts-debian
     image: "jam82/molecule-debian:latest"
-    command: ""
+    command: ~
     pre_build_image: true
     privileged: true
     tmpfs:
@@ -63,7 +63,7 @@ platforms:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: hosts-fedora
     image: "jam82/molecule-fedora:latest"
-    command: ""
+    command: ~
     pre_build_image: true
     privileged: true
     tmpfs:
@@ -73,7 +73,7 @@ platforms:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: hosts-opensuse
     image: "jam82/molecule-opensuse:15"
-    command: ""
+    command: ~
     pre_build_image: true
     privileged: true
     tmpfs:
@@ -83,7 +83,7 @@ platforms:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: hosts-tumbleweed
     image: "jam82/molecule-opensuse:tumbleweed"
-    command: ""
+    command: ~
     pre_build_image: true
     privileged: true
     tmpfs:
@@ -93,7 +93,7 @@ platforms:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: hosts-oraclelinux
     image: "jam82/molecule-oraclelinux:latest"
-    command: ""
+    command: ~
     pre_build_image: true
     privileged: true
     tmpfs:
@@ -103,7 +103,7 @@ platforms:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: hosts-ubuntu
     image: "jam82/molecule-ubuntu:latest"
-    command: ""
+    command: ~
     pre_build_image: true
     privileged: true
     tmpfs:

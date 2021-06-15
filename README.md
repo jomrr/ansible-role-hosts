@@ -1,22 +1,25 @@
 # ansible-role-hosts
 
-![GitHub](https://img.shields.io/github/license/jam82/ansible-role-hosts) ![GitHub last commit](https://img.shields.io/github/last-commit/jam82/ansible-role-hosts) ![GitHub issues](https://img.shields.io/github/issues-raw/jam82/ansible-role-hosts) !![Actions](https://github.com/jam82/ansible-role-hosts/actions/workflows/molecule.yml/badge.svg)
+![GitHub](https://img.shields.io/github/license/jam82/ansible-role-hosts) ![GitHub last commit](https://img.shields.io/github/last-commit/jam82/ansible-role-hosts) ![GitHub issues](https://img.shields.io/github/issues-raw/jam82/ansible-role-hosts) ![Molecule](https://github.com/jam82/ansible-role-hosts/actions/workflows/molecule.yml/badge.svg?branch=main)(https://github.com/jam82/ansible-role-hosts/actions/workflows/molecule.yml)
 
 **Ansible role for configuring the `/etc/hosts` file.**
 
 ## Supported Platforms
 
-- Alpine
-- Amazon
-- Archlinux
-- CentOS
-- Debian
-- Fedora
-- Manjaro
-- OracleLinux
-- OpenSuse Leap, Tumbleweed
-- Raspbian
-- Ubuntu
+| OS Family | Distribution  | Latest | Supported Version(s) | Comment |
+|-----------|---------------|--------|----------------------|---------|
+| Alpine    | Alpine        | :heavy_check_mark: | 3.11, 3.12, 3.13 | |
+| Archlinux | Archlinux     | :heavy_check_mark: | - | |
+|           | Manjaro       | :heavy_check_mark: | - | |
+| Debian    | Debian        | :heavy_check_mark: | 10, 11 | |
+|           | Ubuntu        | :heavy_check_mark: | 18.04, 20.04 | |
+| RedHat    | Almalinux     | :heavy_check_mark: | 8 | |
+|           | Amazonlinux   | :x: | - | not tested, image not working |
+|           | Centos        | :heavy_check_mark: | 7, 8 | |
+|           | Fedora        | :heavy_check_mark: | 33, 34, Rawhide | |
+|           | Oraclelinux   | :heavy_check_mark: | 7, 8 | |
+| Suse      | OpenSuse Leap | :heavy_check_mark: | 15.1, 15.2, 15.3 | |
+|           | Tumbleweed    | :heavy_check_mark: | - | |
 
 ## Requirements
 

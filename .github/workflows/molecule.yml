@@ -1,28 +1,26 @@
 
-# role: ansible-role-test
+# role: ansible-role-hosts
 # file: .github/workflows/molecule.yml
 
 name: Molecule
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - dev
-      - main
+    paths-ignore:
+      - '**/README.md'
+      - '**/doc/**'
+  schedule:
+    - cron: '7 8 9 * *'
+  workflow_dispatch:
 
 jobs:
   molecule:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         use:
           - img: alpine
-            tag: latest
-          - img: amazonlinux
             tag: latest
           - img: archlinux
             tag: latest
@@ -49,7 +47,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install tox
-      - name: Test
+      - name: Test with tox
         run: tox -p
         env:
           TOX_PARALLEL_NO_SPINNER: 1
