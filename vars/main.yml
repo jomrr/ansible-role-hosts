@@ -1,5 +1,5 @@
 ---
-# role: ansible-role-hosts
+# role: jomrr.hosts
 # file: vars/main.yml
 
 _hosts_packages:

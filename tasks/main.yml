@@ -1,25 +1,24 @@
 ---
-# role: ansible-role-hosts
+# role: jomrr.hosts
 # file: tasks/main.yml
 
-- name: debug virtualization type
-  debug:
-    msg: "{{ lookup('env', 'container') }}"
-
 - name: "Tasks for role ansible-role-hosts"
+  when: ansible_virtualization_role == 'host'
+    or (ansible_virtualization_role == 'guest'
+    and ansible_virtualization_type not in ['container', 'containerd', 'docker', 'lxc', 'VirtualPC'])
   block:
     - name: "Install packages for ansible-role-hosts"
-      package:
+      ansible.builtin.package:
         name: "{{ hosts_packages }}"
         state: present
 
     - name: "Check if dhcp or static configuration"
-      command: "ip r"
+      ansible.builtin.command: "ip r"
       changed_when: false
       register: hosts_iproute
 
     - name: "Set fact for testing ip address"
-      set_fact:
+      ansible.builtin.set_fact:
         hosts_ip_test: |
           {{ hosts_iproute.stdout_lines
           | select('match', '^default .* ' ~ ansible_default_ipv4.interface ~ ' .* dhcp')
@@ -28,24 +27,16 @@
           }}
 
     - name: "Set facts for DHCP and FQDN"
-      set_fact:
+      ansible.builtin.set_fact:
         hosts_dhcp: "{{ hosts_ip_test | int | bool }}"
         hosts_fqdn: "{{ (hosts_domain | length > 0) | ternary(ansible_hostname + '.' + hosts_domain, '') }}"
 
     - name: "Write custom hosts file"
-      template:
+      ansible.builtin.template:
         src: "etc/hosts.j2"
         dest: "/etc/hosts"
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"
         backup: "{{ hosts_backup }}"
-      register: hosts_changed
-
-    - name: "Run gather_facts afer hosts file has changed for following roles"
-      gather_facts:
-      when: hosts_changed is changed
-  when: hosts_role_enabled | bool
-    and ansible_virtualization_role == 'host'
-    or (ansible_virtualization_role == 'guest'
-    and ansible_virtualization_type not in ['container', 'containerd', 'docker', 'lxc', 'VirtualPC'])
+      notify: "Gather facts"

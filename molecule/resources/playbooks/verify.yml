@@ -1,5 +1,5 @@
 ---
-# role: ansible-role-hosts
+# role: jomrr.hosts
 # file: molecule/resources/playbooks/verify.yml
 
 - name: Verify
@@ -8,5 +8,5 @@
   gather_facts: false
   tasks:
     - name: "Assertions"
-      assert:
+      ansible.builtin.assert:
         that: true

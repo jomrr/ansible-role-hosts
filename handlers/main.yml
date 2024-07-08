@@ -1,0 +1,6 @@
+---
+# role: jomrr.hosts
+# file: handlers/main.yml
+
+- name: "Gather facts"
+  ansible.builtin.gather_facts:

@@ -1,48 +1,11 @@
 ---
-# role: ansible-role-hosts
+# role: jomrr.hosts
 # file: meta/main.yml
 
 galaxy_info:
   role_name: hosts
   author: jomrr
   description: Ansible role for configuring /etc/hosts entries.
-  company: ''
-
-  # If the issue tracker for your role is not on github, uncomment the
-  # next line and provide a value
   issue_tracker_url: https://github.com/jomrr/ansible-role-hosts/issues
-
   license: MIT
-
-  min_ansible_version: "2.9"
-
-  # platforms is a list of platforms, and each platform has a name and a list of versions.
-  platforms:
-    - name: Alpine
-      versions:
-        - any
-    - name: Amazon
-      versions:
-        - any
-    - name: ArchLinux
-      versions:
-        - any
-    - name: Debian
-      versions:
-        - any
-    - name: EL
-      versions:
-        - any
-    - name: Fedora
-      versions:
-        - any
-    - name: opensuse
-      versions:
-        - any
-    - name: Ubuntu
-      versions:
-        - any
-
-  galaxy_tags: []
-
-dependencies: []
+  min_ansible_version: "2.17"
