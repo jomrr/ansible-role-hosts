@@ -1,12 +1,15 @@
 ---
-# role: jomrr.hosts
+# role: hosts
 # file: molecule/resources/playbooks/verify.yml
 
-- name: Verify
+- name: HOSTS | Verify local name resolution
   hosts: all
-  become: true
-  gather_facts: false
+  gather_facts: true
   tasks:
-    - name: "Assertions"
-      ansible.builtin.assert:
-        that: true
+    - name: HOSTS | Verify canonical names, aliases, loopback, and removed entries
+      ansible.builtin.import_tasks: ../tasks/verify_records.yml
+
+    - name: HOSTS | Verify the explicit local host address
+      ansible.builtin.import_tasks: ../tasks/verify_records.yml
+      vars:
+        __hosts_expected_records: "{{ {ansible_facts.hostname: [hosts_ip_address], ansible_facts.hostname ~ '.' ~ hosts_domain: [hosts_ip_address]} }}"

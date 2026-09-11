@@ -1,36 +1,28 @@
+# Managed by ansible.
 # file: {{ template_destpath }}
-# vim: set sw=4 ts=4 tw=4 et :
-# managed by ansible role: jomrr.hosts
 
-{% if ansible_all_ipv4_addresses | default([]) | length > 0 %}
-# IPv4 host entries
-127.0.0.1   localhost.localdomain  localhost
-
-{% if hosts_ip_all | bool %}
-{% for address4 in ansible_all_ipv4_addresses %}
-{{ address4 }} {{ hosts_fqdn | d('') + ' ' }}{{ ansible_hostname }}
-{% endfor %}
-{% else %}
-{% if hosts_ip_static | bool %}
-{{ hosts_ip_address }}   {{ hosts_fqdn | d('') + ' ' }}{{ ansible_hostname }}
-{% else %}
-{{ '127.0.1.1' if hosts_dhcp | bool else hosts_ip_address }}  {{ hosts_fqdn }} {{ ansible_hostname }}
-{% endif %}
-{% endif %}
-{% endif %}
-{% if ansible_all_ipv6_addresses | default([]) | length > 0 %}
-
-# IPv6 host entries
-::1     localhost6.localdomain6  localhost6  ip6-localhost  ip6-loopback
+# Loopback records
+127.0.0.1 localhost.localdomain localhost
+::1 localhost6.localdomain6 localhost6 localhost ip6-localhost ip6-loopback
 fe00::0 ip6-localnet
 ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
-{% endif %}
-{% if hosts_entries | length > 0 %}
 
-# Static entries
-{% for host in hosts_entries %}
-{{ host.ip }}   {{ host.name }} {{ host.aliases | default('') | join(' ') }}
-{% endfor %}
+# Local host records
+{% set __hosts_names = ([ansible_facts.hostname ~ '.' ~ hosts_domain] if hosts_domain else []) + [ansible_facts.hostname] %}
+{% if hosts_ip_all | bool %}
+{% set __hosts_addresses = ansible_facts.all_ipv4_addresses + ansible_facts.all_ipv6_addresses %}
+{% elif hosts_ip_static | bool or not __hosts_dhcp_routes.stdout %}
+{% set __hosts_addresses = [hosts_ip_address] %}
+{% else %}
+{% set __hosts_addresses = ['127.0.1.1'] %}
 {% endif %}
+{% for __hosts_address in __hosts_addresses %}
+{{ __hosts_address }} {{ __hosts_names | join(' ') }}
+{% endfor %}
+
+# Additional host records
+{% for __hosts_entry in hosts_entries %}
+{{ __hosts_entry.ip }} {{ ([__hosts_entry.name] + (__hosts_entry.aliases | default([]))) | join(' ') }}
+{% endfor %}

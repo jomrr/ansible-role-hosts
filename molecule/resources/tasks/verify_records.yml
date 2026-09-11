@@ -1,0 +1,33 @@
+---
+# role: hosts
+# file: molecule/resources/tasks/verify_records.yml
+
+- name: HOSTS | Resolve managed names and verify removal of obsolete records
+  ansible.builtin.command:
+    argv:
+      - python3
+      - -c
+      - |
+        import ipaddress
+        import json
+        import socket
+        import sys
+        from pathlib import Path
+
+        for name, addresses in json.loads(sys.argv[1]).items():
+            actual = {
+                str(ipaddress.ip_address(result[4][0]))
+                for result in socket.getaddrinfo(name, None, socket.AF_UNSPEC, socket.SOCK_STREAM)
+            }
+            expected = {str(ipaddress.ip_address(address)) for address in addresses}
+            assert actual == expected, (name, expected, actual)
+        names = {
+            name
+            for line in Path('/etc/hosts').read_text().splitlines()
+            for name in line.split('#', 1)[0].split()[1:]
+        }
+        for name in json.loads(sys.argv[2]):
+            assert name not in names, (name, 'obsolete hosts record remains')
+      - "{{ __hosts_expected_records | to_json }}"
+      - "{{ __hosts_absent_records | to_json }}"
+  changed_when: false

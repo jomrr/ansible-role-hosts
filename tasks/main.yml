@@ -1,42 +1,43 @@
 ---
-# role: jomrr.hosts
+# role: hosts
 # file: tasks/main.yml
 
-- name: "Tasks for role ansible-role-hosts"
-  when: ansible_virtualization_role == 'host'
-    or (ansible_virtualization_role == 'guest'
-    and ansible_virtualization_type not in ['container', 'containerd', 'docker', 'lxc', 'VirtualPC'])
+- name: HOSTS | Collect automatic host address information
+  when: hosts_ip_all | bool or not hosts_ip_static | bool
   block:
-    - name: "Install packages for ansible-role-hosts"
+    - name: HOSTS | Load platform packages
+      ansible.builtin.include_vars: "{{ ansible_facts.os_family }}.yml"
+
+    - name: HOSTS | Install address discovery tools
+      become: true
+      become_user: root
       ansible.builtin.package:
-        name: "{{ hosts_packages }}"
+        name: "{{ __hosts_packages }}"
         state: present
 
-    - name: "Check if dhcp or static configuration"
-      ansible.builtin.command: "ip r"
+    - name: HOSTS | Refresh network facts after installing address discovery tools
+      ansible.builtin.setup:
+        gather_subset:
+          - '!all'
+          - '!min'
+          - network
+
+    - name: HOSTS | Read DHCP default routes for automatic address selection
+      ansible.builtin.command:
+        argv: [ip, -4, route, show, default, proto, dhcp]
+      check_mode: false
       changed_when: false
-      register: hosts_iproute
+      register: __hosts_dhcp_routes
+      when: not hosts_ip_all | bool
 
-    - name: "Set fact for testing ip address"
-      ansible.builtin.set_fact:
-        hosts_ip_test: |
-          {{ hosts_iproute.stdout_lines
-          | select('match', '^default .* ' ~ ansible_default_ipv4.interface ~ ' .* dhcp')
-          | list
-          | length
-          }}
-
-    - name: "Set facts for DHCP and FQDN"
-      ansible.builtin.set_fact:
-        hosts_dhcp: "{{ hosts_ip_test | int | bool }}"
-        hosts_fqdn: "{{ (hosts_domain | length > 0) | ternary(ansible_hostname + '.' + hosts_domain, '') }}"
-
-    - name: "Write custom hosts file"
-      ansible.builtin.template:
-        src: "etc/hosts.j2"
-        dest: "/etc/hosts"
-        owner: root
-        group: root
-        mode: "0644"
-        backup: "{{ hosts_backup }}"
-      notify: "Gather facts"
+- name: HOSTS | Write local host records
+  become: true
+  become_user: root
+  ansible.builtin.template:
+    src: etc/hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'
+    backup: "{{ hosts_backup }}"
+  notify: refresh hosts facts

@@ -1,0 +1,6 @@
+---
+# role: hosts
+# file: vars/Debian.yml
+
+__hosts_packages:
+  - iproute2

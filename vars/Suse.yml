@@ -1,0 +1,6 @@
+---
+# role: hosts
+# file: vars/Suse.yml
+
+__hosts_packages:
+  - iproute2

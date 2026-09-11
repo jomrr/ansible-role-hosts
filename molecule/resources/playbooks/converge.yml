@@ -1,12 +1,9 @@
 ---
-# role: jomrr.hosts
+# role: hosts
 # file: molecule/resources/playbooks/converge.yml
 
-- name: Converge
+- name: "Molecule | converge | hosts"
   hosts: all
-  become: true
-  vars:
-    baseline_role_enabled: false
-    hosts_role_enabled: true
+  gather_facts: true
   roles:
-    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+    - role: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}"

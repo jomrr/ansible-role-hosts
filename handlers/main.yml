@@ -1,6 +1,7 @@
 ---
-# role: jomrr.hosts
+# role: hosts
 # file: handlers/main.yml
 
-- name: "Gather facts"
+- name: HOSTS | Refresh facts after changing host records
   ansible.builtin.gather_facts:
+  listen: refresh hosts facts

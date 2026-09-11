@@ -1,0 +1,51 @@
+---
+# role: hosts
+# file: molecule/resources/playbooks/side_effect.yml
+
+- name: HOSTS | Exercise changes to an existing hosts file
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: HOSTS | Exercise all local addresses
+      vars:
+        hosts_ip_all: true
+        __hosts_expected_records: "{{ {ansible_facts.hostname: ansible_facts.all_ipv4_addresses + ansible_facts.all_ipv6_addresses} }}"
+      block:
+        - name: HOSTS | Apply all-address mode over the existing explicit address
+          ansible.builtin.include_role:
+            name: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+
+        - name: HOSTS | Verify all gathered IPv4 and IPv6 addresses resolve
+          ansible.builtin.import_tasks: ../tasks/verify_records.yml
+
+    - name: HOSTS | Exercise automatic single-address selection
+      vars:
+        hosts_ip_static: false
+        hosts_ip_address: 192.0.2.21
+        __hosts_expected_records: "{{ {ansible_facts.hostname: [hosts_ip_address]} }}"
+      block:
+        - name: HOSTS | Apply automatic selection on the container network
+          ansible.builtin.include_role:
+            name: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+
+        - name: HOSTS | Verify the automatic non-DHCP host record
+          ansible.builtin.import_tasks: ../tasks/verify_records.yml
+
+    - name: HOSTS | Exercise IPv6, an empty domain, and entry removal
+      vars:
+        hosts_ip_address: '2001:db8::20'
+        hosts_domain: ''
+        hosts_entries: []
+        __hosts_expected_records: "{{ {ansible_facts.hostname: [hosts_ip_address], 'localhost': ['127.0.0.1', '::1']} }}"
+        __hosts_absent_records:
+          - hosts-v4.invalid
+          - hosts-alias.invalid
+          - hosts-v6.invalid
+          - "{{ ansible_facts.hostname }}.molecule.invalid"
+      block:
+        - name: HOSTS | Replace local and additional host records
+          ansible.builtin.include_role:
+            name: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+
+        - name: HOSTS | Verify changed address and removed names
+          ansible.builtin.import_tasks: ../tasks/verify_records.yml

@@ -1,0 +1,50 @@
+---
+# role: hosts
+# file: meta/argument_specs.yml
+
+argument_specs:
+  main:
+    short_description: Manage /etc/hosts with loopback, local host, and additional entries.
+    options:
+      hosts_backup:
+        type: bool
+        default: true
+        description: Back up /etc/hosts when its contents change.
+      hosts_domain:
+        type: str
+        default: '{{ ansible_facts.domain }}'
+        description: Domain appended to the short hostname; an empty string omits the FQDN.
+      hosts_ip_all:
+        type: bool
+        default: false
+        description: Add all gathered non-loopback IPv4 and IPv6 addresses; overrides the
+          single-address options.
+      hosts_ip_static:
+        type: bool
+        default: false
+        description: Use hosts_ip_address directly instead of selecting 127.0.1.1 for a
+          DHCP default route.
+      hosts_ip_address:
+        type: str
+        default: '{{ ansible_facts.default_ipv4.address | default(''127.0.1.1'') }}'
+        description: Single host address; defaults to the gathered IPv4 address, or 127.0.1.1
+          when unavailable.
+      hosts_entries:
+        type: list
+        elements: dict
+        default: []
+        description: Additional IPv4 or IPv6 records in the supplied order.
+        options:
+          ip:
+            type: str
+            required: true
+            description: IPv4 or IPv6 address of the record.
+          name:
+            type: str
+            required: true
+            description: Canonical hostname of the record.
+          aliases:
+            type: list
+            elements: str
+            default: []
+            description: Optional aliases for the record.

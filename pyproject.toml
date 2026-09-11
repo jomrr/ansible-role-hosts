@@ -1,21 +1,25 @@
 [project]
 name = "hosts"
 version = "0.0.0"
-description = "Ansible role for setting up hosts."
+description = "Ansible role for managing local host name resolution in /etc/hosts."
 authors = ["Jonas Mauer"]
 license = "MIT"
-keywords = []
+keywords = ["ansible", "hosts", "networking"]
 repository = "https://github.com/jomrr/ansible-role-hosts"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
 
 [tool.semantic_release]
+branch = "main"
 commit_message = "build(release): version {version}"
-major_on_zero = false
+major_on_zero = true
 upload_to_pypi = false
 upload_to_vcs_release = true
-version_toml = ["pyproject.toml:project.version"]
+tag_format = "v{version}"
+version_toml = [
+    "pyproject.toml:project.version",
+]
 
 [tool.tox]
 envlist = ["lint"]

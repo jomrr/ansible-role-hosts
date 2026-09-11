@@ -1,143 +1,231 @@
-# ansible-role-hosts
+# Ansible Role: hosts
 
-![GitHub](https://img.shields.io/github/license/jomrr/ansible-role-hosts) ![GitHub last commit](https://img.shields.io/github/last-commit/jomrr/ansible-role-hosts) ![GitHub issues](https://img.shields.io/github/issues-raw/jomrr/ansible-role-hosts) [![Molecule](https://github.com/jomrr/ansible-role-hosts/actions/workflows/molecule.yml/badge.svg)](https://github.com/jomrr/ansible-role-hosts/actions/workflows/molecule.yml)
+![GitHub](https://img.shields.io/github/license/jomrr/ansible-role-hosts)
+![GitHub last commit](https://img.shields.io/github/last-commit/jomrr/ansible-role-hosts)
+![GitHub issues](https://img.shields.io/github/issues-raw/jomrr/ansible-role-hosts)
+[![dev](https://img.shields.io/github/actions/workflow/status/jomrr/ansible-role-hosts/dev.yml?branch=dev&event=push&label=dev)](https://github.com/jomrr/ansible-role-hosts/actions/workflows/dev.yml?query=branch%3Adev)
+[![main](https://img.shields.io/github/actions/workflow/status/jomrr/ansible-role-hosts/main.yml?branch=main&event=push&label=main)](https://github.com/jomrr/ansible-role-hosts/actions/workflows/main.yml?query=branch%3Amain)
 
-**Ansible role for configuring the `/etc/hosts` file.**
+Ansible role for managing local host name resolution in /etc/hosts.
 
-## Supported Platforms
+## Purpose
 
-| OS Family | Distribution  | Latest | Supported Version(s) | Comment |
-|-----------|---------------|--------|----------------------|---------|
-| Alpine    | Alpine        | :heavy_check_mark: | 3.11, 3.12, 3.13 | |
-| Archlinux | Archlinux     | :heavy_check_mark: | - | |
-|           | Manjaro       | :heavy_check_mark: | - | |
-| Debian    | Debian        | :heavy_check_mark: | 10, 11 | |
-|           | Ubuntu        | :heavy_check_mark: | 18.04, 20.04 | |
-| RedHat    | Almalinux     | :heavy_check_mark: | 8 | |
-|           | Amazonlinux   | :x: | - | not tested, image not working |
-|           | Centos        | :heavy_check_mark: | 7, 8 | |
-|           | Fedora        | :heavy_check_mark: | 33, 34, Rawhide | |
-|           | Oraclelinux   | :heavy_check_mark: | 7, 8 | |
-| Suse      | OpenSuse Leap | :heavy_check_mark: | 15.1, 15.2, 15.3 | |
-|           | Tumbleweed    | :heavy_check_mark: | - | |
+Manage /etc/hosts for local name resolution. The role replaces the complete
+file with stable loopback records, local host records, and hosts_entries.
+Repeated runs with unchanged inputs and address facts are idempotent.
+
+## Scope
+
+### Managed
+
+- IPv4 and IPv6 loopback records and local hostname mappings.
+- Additional canonical hostnames and aliases from hosts_entries.
+- File ownership, permissions, and module-provided backups.
+
+### Not Managed
+
+- Routing, network connectivity, DHCP clients, DNS servers, or the system
+  hostname.
+- Preservation of entries not described by the role inputs.
 
 ## Requirements
 
-Ansible 2.9 or higher.
-
-## Variables
-
-Variables and defaults for this role.
-
-### defaults/main.yml
-
-```yaml
-# The role is disabled by default, so you do not get in trouble.
-# Checked in tasks/main.yml which includes tasks.yml if enabled.
-hosts_role_enabled: false
-
-# Backup the hosts file when applying template
-hosts_backup: true
-
-# Set domain for FQDN in hosts file.
-# Only overwrite this if you want to force the domain manually.
-# Normally ansible_domain should be set if you have a sane network configuration.
-hosts_domain: "{{ (ansible_domain | length > 0) | ternary(ansible_domain, '') }}"
-
-# Determine how the targeted host(s) is added to /etc/hosts
-# hosts_ip_all:
-#   true  = generates entries for all IPs in ansible_all_ipvX_addresses
-#           with ansible_fqdn and ansible_hostname
-#   false = generates single entry for value of key "address"
-#           with ansible_fqdn and ansible_hostname dependant on static setting
-hosts_ip_all: false
-# hosts_ip_static:
-#   true  = use address defined in key "address"
-#   false = use 127.0.1.1 if IP obtained via dhcp.
-#           If IP is not obtained by dhcp the value of key "address" is used.
-hosts_ip_static: false
-# hosts_ip_static:
-#   IP address to use, when "hosts_ip_all: false", and
-#   "hosts_ip_static: true" or "static: false" and IP not obtained via dhcp
-#   If "static: false" and IP was obtained via dhcp then 127.0.1.1 is used
-hosts_ip_address: "{{ ansible_default_ipv4.address }}"
-
-# Additional entries in the hosts file
-# hosts_entries:
-#   - name: test.blabla.tld
-#     aliases:
-#       - test
-#       - sys01.blabla.tld
-#     ip: 192.168.08.15
-#   - name: test6.blabla.tld
-#     aliases:
-#       - test6
-#     ip: 2001:0db8:85a3:0000:0000:8a2e:0370:7334
-hosts_entries: []
-```
+- Gather Ansible facts before applying the role.
+- The role must be the sole writer of /etc/hosts; disable runtime management of
+  that file in containers.
 
 ## Dependencies
 
-None.
-
-## Example Playbooks
-
-Here are some example configurations.
-
-### Systems with one interface and single IP address
-
 ```yaml
----
-# role: ansible-role-hosts
-# file: site.yml
-
-- hosts: all
-  become: true
-  gather_facts: true
-  vars:
-    hosts_role_enabled: true
-  roles:
-    - role: ansible-role-hosts
+collections:
+  - name: community.general
+    version: '>=12.0.0'
 ```
 
-### Force static IP in /etc/hosts even if obtained by dhcp
+## Role Variables
+
+### `hosts_backup`
+
+Type: `bool`. Required: `false`.
+
+Back up /etc/hosts when its contents change.
+
+Default:
 
 ```yaml
----
-# role: ansible-role-hosts
-# file: site.yml
-
-- hosts: all
-  become: true
-  gather_facts: true
-  vars:
-    hosts_role_enabled: true
-    hosts_ip_static: true
-  roles:
-    - role: ansible-role-hosts
+hosts_backup: true
 ```
 
-### Generate /etc/hosts with all IPv4 addresses of the host
+### `hosts_domain`
+
+Type: `str`. Required: `false`.
+
+Domain appended to the short hostname; an empty string omits the FQDN.
+
+Default:
 
 ```yaml
----
-# role: ansible-role-hosts
-# file: site.yml
-
-- hosts: all
-  become: true
-  gather_facts: true
-  vars:
-    hosts_role_enabled: true
-    hosts_ip_all: true
-  roles:
-    - role: ansible-role-hosts
+hosts_domain: '{{ ansible_facts.domain }}'
 ```
 
-## License and Author
+### `hosts_ip_all`
 
-- Author:: [jomrr](https://github.com/jomrr/)
-- Copyright:: 2020, [jomrr](https://github.com/jomrr/)
+Type: `bool`. Required: `false`.
 
-Licensed under [MIT License](https://opensource.org/licenses/MIT).
-See [LICENSE](https://github.com/jomrr/ansible-role-hosts/blob/master/LICENSE) file in repository.
+Add all gathered non-loopback IPv4 and IPv6 addresses; overrides the
+single-address options.
+
+Default:
+
+```yaml
+hosts_ip_all: false
+```
+
+### `hosts_ip_static`
+
+Type: `bool`. Required: `false`.
+
+Use hosts_ip_address directly instead of selecting 127.0.1.1 for a DHCP default
+route.
+
+Default:
+
+```yaml
+hosts_ip_static: false
+```
+
+### `hosts_ip_address`
+
+Type: `str`. Required: `false`.
+
+Single host address; defaults to the gathered IPv4 address, or 127.0.1.1 when
+unavailable.
+
+Default:
+
+```yaml
+hosts_ip_address: '{{ ansible_facts.default_ipv4.address | default(''127.0.1.1'')
+  }}'
+```
+
+### `hosts_entries`
+
+Type: `list`. Required: `false`.
+
+Additional IPv4 or IPv6 records in the supplied order.
+
+Default:
+
+```yaml
+hosts_entries: []
+```
+
+## Managed Files
+
+- `/etc/hosts`
+
+## Check Mode
+
+Supports check mode with the same address selection as a normal run.
+
+- Automatic address selection requires iproute to be installed before a first
+  check-mode run.
+- Explicit hosts_ip_static and hosts_ip_address inputs need no route information
+  or iproute installation.
+
+## Service Behavior
+
+No service is managed or restarted. Changed hosts records refresh Ansible facts
+through a handler.
+
+### Handlers
+
+- Refresh Ansible facts after /etc/hosts changes.
+
+## Security Notes
+
+- The hosts file is owned by root with mode 0644; backups are enabled by
+  default.
+
+## Operational Notes
+
+- hosts_ip_all takes precedence and adds all gathered non-loopback IPv4 and IPv6
+  addresses.
+- Automatic single-address selection uses 127.0.1.1 for a DHCP default route and
+  hosts_ip_address otherwise.
+- Without a gathered default IPv4 address, hosts_ip_address defaults to
+  127.0.1.1.
+- Route information is read only to choose a hosts record; the role does not
+  test or modify routing.
+- No portable native validator for a candidate hosts file is used; the argument
+  schema validates input structure.
+- Physical machines and virtual machines are managed without
+  virtualization-based exclusions.
+
+## Supported Platforms
+
+| OS Family | Distribution | Version | Container Image |
+| --------- | ------------ | ------- | --------------- |
+| RedHat | AlmaLinux | latest | [jomrr/molecule-almalinux:latest](https://hub.docker.com/r/jomrr/molecule-almalinux) |
+| Debian | Debian | latest | [jomrr/molecule-debian:latest](https://hub.docker.com/r/jomrr/molecule-debian) |
+| RedHat | Fedora | latest | [jomrr/molecule-fedora:latest](https://hub.docker.com/r/jomrr/molecule-fedora) |
+| Suse | OpenSuse Leap | latest | [jomrr/molecule-opensuse-leap:latest](https://hub.docker.com/r/jomrr/molecule-opensuse-leap) |
+| Suse | OpenSuse Tumbleweed | latest | [jomrr/molecule-opensuse-tumbleweed:latest](https://hub.docker.com/r/jomrr/molecule-opensuse-tumbleweed) |
+| Debian | Ubuntu | latest | [jomrr/molecule-ubuntu:latest](https://hub.docker.com/r/jomrr/molecule-ubuntu) |
+
+## Example Playbook
+
+### Automatic local host records
+
+Use gathered address facts and add a record with an alias.
+
+```yaml
+- name: Configure local name resolution
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: jomrr.hosts
+      hosts_entries:
+        - ip: 192.0.2.15
+          name: application.example.org
+          aliases: [application]
+```
+
+### Explicit local address
+
+Write a chosen host address independently of the routing configuration.
+
+```yaml
+- name: Configure an explicit local host record
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: jomrr.hosts
+      hosts_ip_static: true
+      hosts_ip_address: 192.0.2.20
+      hosts_domain: example.org
+```
+
+### All local addresses
+
+Map the short hostname and FQDN to every gathered IPv4 and IPv6 address.
+
+```yaml
+- name: Configure all local host addresses
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: jomrr.hosts
+      hosts_ip_all: true
+```
+
+## Author
+
+[Jonas Mauer](https://github.com/jomrr)
+
+## License
+
+This project is licensed under the MIT License.
+See [LICENSE](LICENSE) for the full license text.
+
+Copyright (c) 2020 Jonas Mauer.
