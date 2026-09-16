@@ -3,11 +3,13 @@
 
 # Loopback records
 127.0.0.1 localhost.localdomain localhost
+{% if __hosts_ipv6_interfaces.matched > 0 %}
 ::1 localhost6.localdomain6 localhost6 localhost ip6-localhost ip6-loopback
 fe00::0 ip6-localnet
 ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
+{% endif %}
 
 # Local host records
 {% set __hosts_names = ([ansible_facts.hostname ~ '.' ~ hosts_domain] if hosts_domain else []) + [ansible_facts.hostname] %}
@@ -18,11 +20,11 @@ ff02::2 ip6-allrouters
 {% else %}
 {% set __hosts_addresses = ['127.0.1.1'] %}
 {% endif %}
-{% for __hosts_address in __hosts_addresses %}
+{% for __hosts_address in __hosts_addresses if __hosts_ipv6_interfaces.matched > 0 or ':' not in __hosts_address %}
 {{ __hosts_address }} {{ __hosts_names | join(' ') }}
 {% endfor %}
 
 # Additional host records
-{% for __hosts_entry in hosts_entries %}
+{% for __hosts_entry in hosts_entries if __hosts_ipv6_interfaces.matched > 0 or ':' not in __hosts_entry.ip %}
 {{ __hosts_entry.ip }} {{ ([__hosts_entry.name] + (__hosts_entry.aliases | default([]))) | join(' ') }}
 {% endfor %}

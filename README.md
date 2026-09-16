@@ -151,6 +151,10 @@ through a handler.
 
 - hosts_ip_all takes precedence and adds all gathered non-loopback IPv4 and IPv6
   addresses.
+- IPv6 records are written only when /proc/net/if_inet6 lists an IPv6 address,
+  including loopback. No IPv6 route or external connectivity is required.
+- When IPv6 is unavailable, all IPv6 records are omitted, including explicit
+  hosts_ip_address and hosts_entries values. IPv4 records remain unchanged.
 - Automatic single-address selection uses 127.0.1.1 for a DHCP default route and
   hosts_ip_address otherwise.
 - Without a gathered default IPv4 address, hosts_ip_address defaults to

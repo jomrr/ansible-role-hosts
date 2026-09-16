@@ -6,7 +6,13 @@
   when: hosts_ip_all | bool or not hosts_ip_static | bool
   block:
     - name: HOSTS | Load platform packages
-      ansible.builtin.include_vars: "{{ ansible_facts.os_family }}.yml"
+      ansible.builtin.include_vars: "{{ lookup('ansible.builtin.first_found', __hosts_platform_files) }}"
+      vars:
+        __hosts_platform_files:
+          files:
+            - "{{ ansible_facts.os_family }}.yml"
+          paths:
+            - "{{ role_path }}/vars"
 
     - name: HOSTS | Install address discovery tools
       become: true
@@ -29,6 +35,13 @@
       changed_when: false
       register: __hosts_dhcp_routes
       when: not hosts_ip_all | bool
+
+- name: HOSTS | Detect available IPv6 interfaces
+  ansible.builtin.find:
+    paths: /proc/net
+    patterns: if_inet6
+    contains: '.+'
+  register: __hosts_ipv6_interfaces
 
 - name: HOSTS | Write local host records
   become: true
