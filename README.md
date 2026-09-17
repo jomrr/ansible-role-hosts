@@ -3,8 +3,8 @@
 ![GitHub](https://img.shields.io/github/license/jomrr/ansible-role-hosts)
 ![GitHub last commit](https://img.shields.io/github/last-commit/jomrr/ansible-role-hosts)
 ![GitHub issues](https://img.shields.io/github/issues-raw/jomrr/ansible-role-hosts)
-[![dev](https://img.shields.io/github/actions/workflow/status/jomrr/ansible-role-hosts/dev.yml?branch=dev&event=push&label=dev)](https://github.com/jomrr/ansible-role-hosts/actions/workflows/dev.yml?query=branch%3Adev)
-[![main](https://img.shields.io/github/actions/workflow/status/jomrr/ansible-role-hosts/main.yml?branch=main&event=push&label=main)](https://github.com/jomrr/ansible-role-hosts/actions/workflows/main.yml?query=branch%3Amain)
+[![dev](https://img.shields.io/github/actions/workflow/status/jomrr/ansible-role-hosts/dev.yml?branch=dev&label=dev)](https://github.com/jomrr/ansible-role-hosts/actions/workflows/dev.yml?query=branch%3Adev)
+[![main](https://img.shields.io/github/actions/workflow/status/jomrr/ansible-role-hosts/main.yml?branch=main&label=main)](https://github.com/jomrr/ansible-role-hosts/actions/workflows/main.yml?query=branch%3Amain)
 
 Ansible role for managing local host name resolution in /etc/hosts.
 
@@ -232,4 +232,4 @@ Map the short hostname and FQDN to every gathered IPv4 and IPv6 address.
 This project is licensed under the MIT License.
 See [LICENSE](LICENSE) for the full license text.
 
-Copyright (c) 2020 Jonas Mauer.
+Copyright (c) 2020-2026 Jonas Mauer.
