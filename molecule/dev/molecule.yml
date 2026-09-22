@@ -37,17 +37,49 @@ provisioner:
         hosts_ip_static: true
         hosts_ip_address: "192.0.2.20"
         hosts_entries:
-          - ip: "192.0.2.10"
-            name: "hosts-v4.invalid"
+          - ip: "192.0.2.20"
+            name: "{{ ansible_facts.hostname }}"
             aliases:
+              - "{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"
+          - ip: "192.0.2.99"
+            name: "{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"
+            aliases:
+              - "{{ ansible_facts.hostname }}"
+          - ip: "192.0.2.10"
+            name: "{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"
+            aliases:
+              - "hosts-v4.invalid"
+              - "{{ ansible_facts.hostname }}"
               - "hosts-alias.invalid"
+          - ip: "192.0.2.20"
+            name: "hosts-local-ip.invalid"
+            aliases:
+              - "{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"
+              - "hosts-local-alias.invalid"
+              - "{{ ansible_facts.hostname }}"
           - ip: "2001:db8::10"
             name: "hosts-v6.invalid"
+            aliases:
+              - "{{ ansible_facts.hostname }}"
+              - "{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"
+        __hosts_expected_additional_records:
+          - - "192.0.2.10"
+            - "hosts-v4.invalid"
+            - "hosts-alias.invalid"
+          - - "192.0.2.20"
+            - "hosts-local-ip.invalid"
+            - "hosts-local-alias.invalid"
+          - - "2001:db8::10"
+            - "hosts-v6.invalid"
         __hosts_expected_records:
           hosts-v4.invalid:
             - "192.0.2.10"
           hosts-alias.invalid:
             - "192.0.2.10"
+          hosts-local-ip.invalid:
+            - "192.0.2.20"
+          hosts-local-alias.invalid:
+            - "192.0.2.20"
           hosts-v6.invalid:
             - "2001:db8::10"
           localhost:

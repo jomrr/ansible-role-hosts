@@ -19,7 +19,7 @@ hosts_ip_static: false
 hosts_ip_address: "{{ ansible_facts.default_ipv4.address | default('127.0.1.1') }}"
 # hosts_ip_address: 192.0.2.20
 
-# Additional IPv4 or IPv6 records with a canonical name and optional aliases.
+# Additional IPv4 or IPv6 records; local short hostname and FQDN are removed from names and aliases.
 hosts_entries: []
 # hosts_entries:
 #   - ip: 192.0.2.15

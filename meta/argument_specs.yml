@@ -33,7 +33,9 @@ argument_specs:
         type: list
         elements: dict
         default: []
-        description: Additional IPv4 or IPv6 records in the supplied order.
+        description: Additional IPv4 or IPv6 records in the supplied order, excluding the
+          local short hostname and FQDN from names and aliases. Records without remaining
+          names are omitted.
         options:
           ip:
             type: str

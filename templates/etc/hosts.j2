@@ -23,8 +23,17 @@ ff02::2 ip6-allrouters
 {% for __hosts_address in __hosts_addresses if __hosts_ipv6_interfaces.matched > 0 or ':' not in __hosts_address %}
 {{ __hosts_address }} {{ __hosts_names | join(' ') }}
 {% endfor %}
+{% set __hosts_additional = namespace(records=[]) %}
+{% for __hosts_entry in hosts_entries if __hosts_ipv6_interfaces.matched > 0 or ':' not in __hosts_entry.ip %}
+{% set __hosts_entry_names = ([__hosts_entry.name] + (__hosts_entry.aliases | default([]))) | reject('in', __hosts_names) | list %}
+{% if __hosts_entry_names %}
+{% set __hosts_additional.records = __hosts_additional.records + [[__hosts_entry.ip] + __hosts_entry_names] %}
+{% endif %}
+{% endfor %}
+{% for __hosts_record in __hosts_additional.records %}
+{% if loop.first %}
 
 # Additional host records
-{% for __hosts_entry in hosts_entries if __hosts_ipv6_interfaces.matched > 0 or ':' not in __hosts_entry.ip %}
-{{ __hosts_entry.ip }} {{ ([__hosts_entry.name] + (__hosts_entry.aliases | default([]))) | join(' ') }}
+{% endif %}
+{{ __hosts_record | join(' ') }}
 {% endfor %}

@@ -6,10 +6,20 @@
   hosts: all
   gather_facts: true
   tasks:
-    - name: HOSTS | Exercise all local addresses
+    - name: HOSTS | Exercise all local addresses and additional entries containing only local names
       vars:
         hosts_ip_all: true
-        __hosts_expected_records: "{{ {ansible_facts.hostname: ansible_facts.all_ipv4_addresses + ansible_facts.all_ipv6_addresses} }}"
+        hosts_entries:
+          - ip: 192.0.2.20
+            name: "{{ ansible_facts.hostname }}"
+            aliases: ["{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"]
+          - ip: 192.0.2.99
+            name: "{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"
+            aliases: ["{{ ansible_facts.hostname }}"]
+        __hosts_expected_additional_records: []
+        __hosts_expected_records: "{{ {
+          ansible_facts.hostname: ansible_facts.all_ipv4_addresses + ansible_facts.all_ipv6_addresses,
+          ansible_facts.hostname ~ '.' ~ hosts_domain: ansible_facts.all_ipv4_addresses + ansible_facts.all_ipv6_addresses} }}"
       block:
         - name: HOSTS | Apply all-address mode over the existing explicit address
           ansible.builtin.include_role:
@@ -18,10 +28,16 @@
         - name: HOSTS | Verify all gathered IPv4 and IPv6 addresses resolve
           ansible.builtin.import_tasks: ../tasks/verify_records.yml
 
-    - name: HOSTS | Exercise automatic single-address selection
+    - name: HOSTS | Exercise automatic single-address selection and IPv6-only additional entries
       vars:
         hosts_ip_static: false
         hosts_ip_address: 192.0.2.21
+        hosts_entries:
+          - ip: '2001:db8::10'
+            name: hosts-v6.invalid
+            aliases: ["{{ ansible_facts.hostname }}", "{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"]
+        __hosts_expected_additional_records:
+          - ['2001:db8::10', hosts-v6.invalid]
         __hosts_expected_records: "{{ {ansible_facts.hostname: [hosts_ip_address]} }}"
       block:
         - name: HOSTS | Apply automatic selection on the container network
@@ -36,10 +52,13 @@
         hosts_ip_address: '2001:db8::20'
         hosts_domain: ''
         hosts_entries: []
+        __hosts_expected_additional_records: []
         __hosts_expected_records: "{{ {ansible_facts.hostname: [hosts_ip_address], 'localhost': ['127.0.0.1', '::1']} }}"
         __hosts_absent_records:
           - hosts-v4.invalid
           - hosts-alias.invalid
+          - hosts-local-ip.invalid
+          - hosts-local-alias.invalid
           - hosts-v6.invalid
           - "{{ ansible_facts.hostname }}.molecule.invalid"
       block:

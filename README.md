@@ -40,6 +40,8 @@ Repeated runs with unchanged inputs and address facts are idempotent.
 collections:
   - name: community.general
     version: '>=12.0.0'
+  - name: ansible.posix
+    version: '>=2.0.0'
 ```
 
 ## Role Variables
@@ -112,7 +114,9 @@ hosts_ip_address: '{{ ansible_facts.default_ipv4.address | default(''127.0.1.1''
 
 Type: `list`. Required: `false`.
 
-Additional IPv4 or IPv6 records in the supplied order.
+Additional IPv4 or IPv6 records in the supplied order, excluding the local short
+hostname and FQDN from names and aliases. Records without remaining names are
+omitted.
 
 Default:
 
@@ -151,6 +155,13 @@ through a handler.
 
 - hosts_ip_all takes precedence and adds all gathered non-loopback IPv4 and IPv6
   addresses.
+- The local short hostname and the FQDN formed with hosts_domain are removed
+  from hosts_entries names and aliases by exact comparison, independently of the
+  entry's IP address. Other names keep their supplied order; if the canonical
+  name is removed, the first remaining alias takes its place.
+- Additional entries without remaining names are omitted. The "Additional host
+  records" heading appears only when at least one entry remains after local-name
+  and IPv6 filtering.
 - IPv6 records are written only when /proc/net/if_inet6 lists an IPv6 address,
   including loopback. No IPv6 route or external connectivity is required.
 - When IPv6 is unavailable, all IPv6 records are omitted, including explicit
