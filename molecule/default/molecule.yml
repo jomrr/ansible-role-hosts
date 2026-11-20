@@ -15,55 +15,57 @@ provisioner:
     defaults:
       forks: 8
       interpreter_python: "auto_silent"
-      allow_world_readable_tmpfiles: true
       callbacks_enabled: "ansible.posix.profile_tasks,ansible.posix.timer"
       callback_result_format: "yaml"
-      remote_tmp: "/tmp/.ansible/tmp"
-    ssh_connection:
+    connection:
       pipelining: true
-  log: true
-  playbooks:
-    converge: "../resources/playbooks/converge.yml"
-    verify: "../resources/playbooks/verify.yml"
-    prepare: "../resources/playbooks/prepare.yml"
-    side_effect: "../resources/playbooks/side_effect.yml"
   inventory:
     group_vars:
       all:
-        hosts_domain: "molecule.invalid"
+        ansible_podman_mount_detection: false
+        hosts_domains:
+          - "molecule.invalid"
+          - "alternate.invalid"
         hosts_ip_static: true
-        hosts_ip_address: "192.0.2.20"
+        hosts_ip_address: "127.0.1.1"
         hosts_entries:
-          - ip: "192.0.2.20"
+          - ip: "127.0.1.1"
             name: "{{ ansible_facts.hostname }}"
             aliases:
-              - "{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"
+              - "{{ ansible_facts.hostname }}.molecule.invalid"
+              - "{{ ansible_facts.hostname }}.alternate.invalid"
           - ip: "192.0.2.99"
-            name: "{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"
+            name: "{{ ansible_facts.hostname }}.molecule.invalid"
             aliases:
               - "{{ ansible_facts.hostname }}"
           - ip: "192.0.2.10"
-            name: "{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"
+            name: "{{ ansible_facts.hostname }}.alternate.invalid"
             aliases:
               - "hosts-v4.invalid"
               - "{{ ansible_facts.hostname }}"
               - "hosts-alias.invalid"
-          - ip: "192.0.2.20"
+          - ip: "127.0.1.1"
             name: "hosts-local-ip.invalid"
             aliases:
-              - "{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"
+              - "{{ ansible_facts.hostname }}.molecule.invalid"
               - "hosts-local-alias.invalid"
+              - "{{ ansible_facts.hostname }}.alternate.invalid"
               - "{{ ansible_facts.hostname }}"
           - ip: "2001:db8::10"
             name: "hosts-v6.invalid"
             aliases:
               - "{{ ansible_facts.hostname }}"
-              - "{{ ansible_facts.hostname ~ '.' ~ hosts_domain }}"
+              - "{{ ansible_facts.hostname }}.molecule.invalid"
+              - "{{ ansible_facts.hostname }}.alternate.invalid"
+        __hosts_expected_local_names:
+          - "{{ ansible_facts.hostname }}.molecule.invalid"
+          - "{{ ansible_facts.hostname }}.alternate.invalid"
+          - "{{ ansible_facts.hostname }}"
         __hosts_expected_additional_records:
           - - "192.0.2.10"
             - "hosts-v4.invalid"
             - "hosts-alias.invalid"
-          - - "192.0.2.20"
+          - - "127.0.1.1"
             - "hosts-local-ip.invalid"
             - "hosts-local-alias.invalid"
           - - "2001:db8::10"
@@ -74,9 +76,9 @@ provisioner:
           hosts-alias.invalid:
             - "192.0.2.10"
           hosts-local-ip.invalid:
-            - "192.0.2.20"
+            - "127.0.1.1"
           hosts-local-alias.invalid:
-            - "192.0.2.20"
+            - "127.0.1.1"
           hosts-v6.invalid:
             - "2001:db8::10"
           localhost:
@@ -84,6 +86,12 @@ provisioner:
             - "::1"
         __hosts_absent_records:
           - "hosts-stale.invalid"
+  log: true
+  playbooks:
+    prepare: "../resources/playbooks/prepare.yml"
+    converge: "../resources/playbooks/converge.yml"
+    verify: "../resources/playbooks/verify.yml"
+    side_effect: "../resources/playbooks/side_effect.yml"
 verifier:
   name: "ansible"
 scenario:

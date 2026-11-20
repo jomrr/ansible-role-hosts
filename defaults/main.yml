@@ -5,9 +5,10 @@
 # Back up /etc/hosts when its contents change.
 hosts_backup: true
 
-# Domain appended to the short hostname; an empty string omits the FQDN.
-hosts_domain: "{{ ansible_facts.domain }}"
-# hosts_domain: example.org
+# Domains used for FQDNs in list order before the short hostname; an empty list omits FQDNs.
+hosts_domains:
+  - "{{ ansible_facts.domain }}"
+# hosts_domains: [example.org, example.net]
 
 # Add all gathered non-loopback IPv4 and IPv6 addresses instead of a single address.
 hosts_ip_all: false
@@ -19,7 +20,7 @@ hosts_ip_static: false
 hosts_ip_address: "{{ ansible_facts.default_ipv4.address | default('127.0.1.1') }}"
 # hosts_ip_address: 192.0.2.20
 
-# Additional IPv4 or IPv6 records; local short hostname and FQDN are removed from names and aliases.
+# Additional IPv4 or IPv6 records; local short hostname and all local FQDNs are removed from names and aliases.
 hosts_entries: []
 # hosts_entries:
 #   - ip: 192.0.2.15

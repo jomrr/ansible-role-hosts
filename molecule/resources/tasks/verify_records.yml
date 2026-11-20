@@ -9,5 +9,6 @@
       {{ __hosts_expected_records | to_json | quote }}
       {{ __hosts_absent_records | to_json | quote }}
       {{ __hosts_expected_additional_records | to_json | quote }}
+      {{ __hosts_expected_local_names | to_json | quote }}
     executable: python3
   changed_when: false

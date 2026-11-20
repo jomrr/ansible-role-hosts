@@ -50,12 +50,18 @@ def verify_additional_records(
 
 
 def verify_records(
-    absent_names: list[str], expect_ipv6: bool, additional_records: list[list[str]]
+    absent_names: list[str],
+    expect_ipv6: bool,
+    additional_records: list[list[str]],
+    local_names: list[str],
 ) -> set[str]:
     """Check hosts file content independently of other NSS name sources."""
     lines = Path("/etc/hosts").read_text(encoding="utf-8").splitlines()
     verify_additional_records(lines, additional_records, expect_ipv6)
     records = [line.split("#", 1)[0].split() for line in lines]
+    for record in records:
+        if any(name in local_names for name in record[1:]):
+            assert record[1:] == local_names, ("local hosts name order", local_names, record)
     names = {name for record in records for name in record[1:]}
     for name in absent_names:
         assert name not in names, (name, "obsolete hosts record remains")
@@ -78,7 +84,10 @@ def main() -> None:
     except FileNotFoundError:
         ipv6_available = False
     names = verify_records(
-        json.loads(sys.argv[2]), ipv6_available, json.loads(sys.argv[3])
+        json.loads(sys.argv[2]),
+        ipv6_available,
+        json.loads(sys.argv[3]),
+        json.loads(sys.argv[4]),
     )
     verify_resolution(json.loads(sys.argv[1]), names, ipv6_available)
 

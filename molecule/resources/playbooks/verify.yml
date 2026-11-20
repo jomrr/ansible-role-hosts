@@ -13,4 +13,5 @@
       ansible.builtin.import_tasks: ../tasks/verify_records.yml
       vars:
         __hosts_expected_records: "{{ {ansible_facts.hostname: [hosts_ip_address],
-          ansible_facts.hostname ~ '.' ~ hosts_domain: [hosts_ip_address]} }}"
+          ansible_facts.hostname ~ '.molecule.invalid': [hosts_ip_address],
+          ansible_facts.hostname ~ '.alternate.invalid': [hosts_ip_address]} }}"

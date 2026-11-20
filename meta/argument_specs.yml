@@ -10,10 +10,13 @@ argument_specs:
         type: bool
         default: true
         description: Back up /etc/hosts when its contents change.
-      hosts_domain:
-        type: str
-        default: '{{ ansible_facts.domain }}'
-        description: Domain appended to the short hostname; an empty string omits the FQDN.
+      hosts_domains:
+        type: list
+        elements: str
+        default:
+          - '{{ ansible_facts.domain }}'
+        description: Domains used to form FQDNs in list order, followed by the short hostname.
+          An empty list omits FQDNs; empty domain strings are ignored.
       hosts_ip_all:
         type: bool
         default: false
@@ -34,8 +37,8 @@ argument_specs:
         elements: dict
         default: []
         description: Additional IPv4 or IPv6 records in the supplied order, excluding the
-          local short hostname and FQDN from names and aliases. Records without remaining
-          names are omitted.
+          local short hostname and all local FQDNs from names and aliases. Records without
+          remaining names are omitted.
         options:
           ip:
             type: str

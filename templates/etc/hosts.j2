@@ -12,7 +12,8 @@ ff02::2 ip6-allrouters
 {% endif %}
 
 # Local host records
-{% set __hosts_names = ([ansible_facts.hostname ~ '.' ~ hosts_domain] if hosts_domain else []) + [ansible_facts.hostname] %}
+{% set __hosts_names = (hosts_domains | reject('equalto', '') |
+  map('regex_replace', '^', ansible_facts.hostname ~ '.') | list) + [ansible_facts.hostname] %}
 {% if hosts_ip_all | bool %}
 {% set __hosts_addresses = ansible_facts.all_ipv4_addresses + ansible_facts.all_ipv6_addresses %}
 {% elif hosts_ip_static | bool or not __hosts_dhcp_routes.stdout %}

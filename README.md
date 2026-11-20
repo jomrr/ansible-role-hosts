@@ -58,16 +58,18 @@ Default:
 hosts_backup: true
 ```
 
-### `hosts_domain`
+### `hosts_domains`
 
-Type: `str`. Required: `false`.
+Type: `list`. Required: `false`.
 
-Domain appended to the short hostname; an empty string omits the FQDN.
+Domains used to form FQDNs in list order, followed by the short hostname. An
+empty list omits FQDNs; empty domain strings are ignored.
 
 Default:
 
 ```yaml
-hosts_domain: '{{ ansible_facts.domain }}'
+hosts_domains:
+  - '{{ ansible_facts.domain }}'
 ```
 
 ### `hosts_ip_all`
@@ -115,8 +117,8 @@ hosts_ip_address: '{{ ansible_facts.default_ipv4.address | default(''127.0.1.1''
 Type: `list`. Required: `false`.
 
 Additional IPv4 or IPv6 records in the supplied order, excluding the local short
-hostname and FQDN from names and aliases. Records without remaining names are
-omitted.
+hostname and all local FQDNs from names and aliases. Records without remaining
+names are omitted.
 
 Default:
 
@@ -155,7 +157,12 @@ through a handler.
 
 - hosts_ip_all takes precedence and adds all gathered non-loopback IPv4 and IPv6
   addresses.
-- The local short hostname and the FQDN formed with hosts_domain are removed
+- hosts_domains replaces hosts_domain and accepts a list, for example
+  [example.org, example.net]. Each local address line lists one FQDN per
+  nonempty domain in list order, then the short hostname. An empty list renders
+  only the short hostname; empty domain strings are ignored, including an empty
+  gathered domain.
+- The local short hostname and all FQDNs formed with hosts_domains are removed
   from hosts_entries names and aliases by exact comparison, independently of the
   entry's IP address. Other names keep their supplied order; if the canonical
   name is removed, the first remaining alias takes its place.
@@ -206,9 +213,9 @@ Use gathered address facts and add a record with an alias.
           aliases: [application]
 ```
 
-### Explicit local address
+### Multiple domains on a local address
 
-Write a chosen host address independently of the routing configuration.
+Write one FQDN per domain on 127.0.1.1, followed by the short hostname.
 
 ```yaml
 - name: Configure an explicit local host record
@@ -217,13 +224,13 @@ Write a chosen host address independently of the routing configuration.
   roles:
     - role: jomrr.hosts
       hosts_ip_static: true
-      hosts_ip_address: 192.0.2.20
-      hosts_domain: example.org
+      hosts_ip_address: 127.0.1.1
+      hosts_domains: [example.org, example.net]
 ```
 
 ### All local addresses
 
-Map the short hostname and FQDN to every gathered IPv4 and IPv6 address.
+Map every configured FQDN and the short name to all gathered addresses.
 
 ```yaml
 - name: Configure all local host addresses
